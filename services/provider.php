@@ -12,6 +12,7 @@
 
 use Joomla\CMS\Extension\PluginInterface;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
@@ -36,7 +37,8 @@ return new class() implements ServiceProviderInterface {
                 $plugin = new YandexTurbo(
                     $container->get(DispatcherInterface::class),
                     (array) PluginHelper::getPlugin('task', 'yandexturbo'),
-                    JPATH_ROOT . '/media/'
+                    JPATH_ROOT . '/media/',
+                    'https://' . Uri::getInstance()->getHost()
                 );
                 $plugin->setApplication(Factory::getApplication());
                 return $plugin;

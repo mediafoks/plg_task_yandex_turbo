@@ -23,7 +23,6 @@ use Joomla\Registry\Registry;
 use Joomla\Component\Content\Administrator\Extension\ContentComponent;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\Utilities\ArrayHelper;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Factory;
@@ -60,18 +59,28 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
     private $rootDirectory;
 
     /**
+     * The site directory path
+     *
+     * @var    string
+     * @since  4.2.0
+     */
+    private $siteDirectory;
+
+    /**
      * Constructor.
      *
      * @param   DispatcherInterface  $dispatcher     The dispatcher
      * @param   array                $config         An optional associative array of configuration settings
-     * @param   string               $rootDirectory  The root directory to look for images
+     * @param   string               $rootDirectory  The root directory
+     * @param   string               $siteDirectory  The site directory
      *
      * @since   4.2.0
      */
-    public function __construct(DispatcherInterface $dispatcher, array $config, string $rootDirectory)
+    public function __construct(DispatcherInterface $dispatcher, array $config, string $rootDirectory, string $siteDirectory)
     {
         parent::__construct($dispatcher, $config);
         $this->rootDirectory = $rootDirectory;
+        $this->siteDirectory = $siteDirectory;
     }
 
     /**
@@ -141,7 +150,8 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
 
     private function setImage($image)
     {
-        $host = Uri::getInstance()->getHost();
+        $sitePath = Path::check($this->siteDirectory . '/');
+
         $linkImg = $image;
 
         $absU = 0;
@@ -162,14 +172,14 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
         if ($absU == 1) {
             $linkImg = $image;
         } else {
-            $linkImg = 'https://' . $host . '/' . $image;
+            $linkImg = $sitePath . $image;
 
             if ($image[0] == '/') {
                 $myURI = new Uri(Uri::base(false));
                 $myURI->setPath($image);
                 $linkImg = $myURI->toString();
             } else {
-                $linkImg = 'https://' . $host . '/' . $image;
+                $linkImg = $sitePath . $image;
             }
         }
 
@@ -180,13 +190,14 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
     {
         $app = $this->getApplication();
 
-        $host = Uri::getInstance()->getHost();
-        $itemLink = 'https://' . $host . '/' . $item->category_route . '/' . $item->alias;
+        $sitePath = Path::check($this->siteDirectory . '/');
+
+        $itemLink = $sitePath . $item->category_route . '/' . $item->alias; // адрес канала
 
         $timezone = new \DateTimeZone($app->get('offset', 'UTC'));
         $item_date = Factory::getDate($item->modified);
         $item_date->setTimezone($timezone);
-        $modDate = $item_date->toRFC822(true);
+        $modDate = $item_date->toRFC822(true); // дата в формате RFC822
 
         $images = json_decode($item->images); // массив изображений
         $image_intro = $images->image_intro; // изображение вступительного текста
@@ -222,11 +233,11 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
 
     private function channelInfoRender($cat)
     {
-        $host = Uri::getInstance()->getHost();
+        $sitePath = Path::check($this->siteDirectory . '/');
 
         return '
         <title>' . htmlspecialchars($cat['name'], ENT_COMPAT, 'UTF-8', false) . '</title>
-        <link>https://' . $host . '/' . trim($cat['link'], '/') . '</link>
+        <link>' . $sitePath . trim($cat['link'], '/') . '</link>
         <description>' . htmlspecialchars($this->getRevars($cat['description']), ENT_COMPAT, 'UTF-8', false) . '</description>
         <language>ru</language>';
     }

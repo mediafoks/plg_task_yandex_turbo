@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="task" method="upgrade">
+    <name>PLG_TASK_YANDEX_TURBO</name>
+    <author>Sergey Kuznetsov</author>
+    <creationDate>2024-11-11</creationDate>
+    <copyright>(C) 2024 Sergey Kuznetsov. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later</license>
+    <authorEmail>mediafoks@gmail.com</authorEmail>
+    <authorUrl></authorUrl>
+    <version>1.0.0</version>
+    <description>PLG_TASK_YANDEX_TURBO_XML_DESCRIPTION</description>
+    <namespace path="src">Joomla\Plugin\Task\YandexTurbo</namespace>
+    <files>
+        <folder plugin="yandexturbo">services</folder>
+        <folder>src</folder>
+        <folder>language</folder>
+        <folder>forms</folder>
+    </files>
+    <languages folder="language">
+        <language tag="en-GB">en-GB/plg_task_yandexturbo.ini</language>
+        <language tag="en-GB">en-GB/plg_task_yandexturbo.sys.ini</language>
+        <language tag="ru-RU">ru-RU/plg_task_yandexturbo.ini</language>
+        <language tag="ru-RU">ru-RU/plg_task_yandexturbo.sys.ini</language>
+    </languages>
+    <updateservers>
+        <server type="extension" priority="1" name="Yandex Turbo">https://raw.githubusercontent.com/mediafoks/plg_task_yandex_turbo/main/update.xml</server>
+    </updateservers>
+</extension>

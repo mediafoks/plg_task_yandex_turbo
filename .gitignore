@@ -1,0 +1,10 @@
+.vscode/sftp.json
+package-lock.json
+node_modules/*
+
+.yarn/*
+yarn.lock
+.pnp.cjs
+.pnp.loader.mjs
+
+pnpm-lock.yaml

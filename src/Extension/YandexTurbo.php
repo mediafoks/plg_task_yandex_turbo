@@ -226,7 +226,7 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
             <author>' . htmlspecialchars($item->author, ENT_COMPAT, 'UTF-8', false) . '</author>
             <turbo:content>
                 <![CDATA[ <header><h1>' . htmlspecialchars($item->title, ENT_COMPAT, 'UTF-8', false) . '</h1></header>
-                <div>' . $itemImage . '</div>' . $this->getRevars($item->introtext) . ' ]]>
+                <div>' . $itemImage . '</div>' . htmlspecialchars(str_replace('&nbsp;', ' ', $this->getRevars($item->introtext)), ENT_COMPAT, 'UTF-8', false) . ' ]]>
             </turbo:content>
         </item>';
     }
@@ -238,7 +238,7 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
         return '
         <title>' . htmlspecialchars($cat['name'], ENT_COMPAT, 'UTF-8', false) . '</title>
         <link>' . $sitePath . trim($cat['link'], '/') . '</link>
-        <description>' . htmlspecialchars($this->getRevars($cat['description']), ENT_COMPAT, 'UTF-8', false) . '</description>
+        <description>' . htmlspecialchars(str_replace('&nbsp;', ' ', $this->getRevars($cat['description'])), ENT_COMPAT, 'UTF-8', false) . '</description>
         <language>ru</language>';
     }
 

@@ -6,6 +6,8 @@
             <field name="channel_description" type="text" label="PLG_TASK_YANDEXTURBO_FIELD_CHANNEL_DESCRIPTION_LABEL" description="PLG_TASK_YANDEXTURBO_FIELD_CHANNEL_DESCRIPTION_DESC" required="false" filter="string" />
             <field name="channel_link" type="text" label="PLG_TASK_YANDEXTURBO_FIELD_CHANNEL_LINK_LABEL" description="PLG_TASK_YANDEXTURBO_FIELD_CHANNEL_LINK_DESC" required="false" filter="string" />
 
+            <field type="spacer" name="myspacer" hr="true"/>
+
             <field name="count" type="number" label="PLG_TASK_YANDEXTURBO_FIELD_COUNT_LABEL" description="PLG_TASK_YANDEXTURBO_FIELD_COUNT_DESC" default="5" filter="integer" min="0" validate="number" />
 
             <field name="category_filtering_type" type="list" label="PLG_TASK_YANDEXTURBO_FIELD_CATFILTERINGTYPE_LABEL" description="PLG_TASK_YANDEXTURBO_FIELD_CATFILTERINGTYPE_DESC" default="1" filter="integer">

@@ -107,6 +107,18 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
         ];
     }
 
+    private function dateConvert($date)
+    {
+        $app = $this->getApplication();
+
+        $timezone = new \DateTimeZone($app->get('offset', 'UTC'));
+        $dateFactory = Factory::getDate($date);
+        $dateFactory->setTimezone($timezone);
+        $newDate = $dateFactory->toRFC822(true); // дата в формате RFC822
+
+        return $newDate;
+    }
+
     private function getRevars($txt)
     {
         $plugin = PluginHelper::getPlugin('system', 'revars');
@@ -192,12 +204,7 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
 
         $sitePath = Path::check($this->siteDirectory . '/');
 
-        $itemLink = $sitePath . $item->category_route . '/' . $item->alias; // адрес канала
-
-        $timezone = new \DateTimeZone($app->get('offset', 'UTC'));
-        $item_date = Factory::getDate($item->modified);
-        $item_date->setTimezone($timezone);
-        $modDate = $item_date->toRFC822(true); // дата в формате RFC822
+        $itemLink = $sitePath . $item->category_route . '/' . $item->alias; // адрес
 
         $images = json_decode($item->images); // массив изображений
         $image_intro = $images->image_intro; // изображение вступительного текста
@@ -214,7 +221,7 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
             'class' => 'item-img'
         ];
 
-        $itemImage = LayoutHelper::render('joomla.html.image', $imageAttribs); // изображение айтема
+        $itemImage = LayoutHelper::render('joomla.html.image', $imageAttribs); // изображение
 
         return '
         <item turbo="true">
@@ -222,7 +229,7 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
             <link>' . $itemLink . '</link>
             <turbo:source>' . $itemLink . '</turbo:source>
             <turbo:topic>' . htmlspecialchars($item->title, ENT_COMPAT, 'UTF-8', false) . '</turbo:topic>
-            <pubDate>' . htmlspecialchars($modDate, ENT_COMPAT, 'UTF-8', false) . '</pubDate>
+            <pubDate>' . htmlspecialchars($this->dateConvert($item->modified), ENT_COMPAT, 'UTF-8', false) . '</pubDate>
             <author>' . htmlspecialchars($item->author, ENT_COMPAT, 'UTF-8', false) . '</author>
             <turbo:content>
                 <![CDATA[ <header><h1>' . htmlspecialchars($item->title, ENT_COMPAT, 'UTF-8', false) . '</h1></header>
@@ -231,14 +238,24 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
         </item>';
     }
 
-    private function channelInfoRender($cat)
+    private function channelInfoRender($data)
     {
         $sitePath = Path::check($this->siteDirectory . '/');
 
+        $params = $data['params'];
+
+        $app = $this->getApplication();
+        $categoryFactory = $app->bootComponent('com_content')->getCategory();
+        $category = $categoryFactory->get($data['catids'][0]);
+
+        $channelName = $params->get('channel_name') ?: $category->title; // имя канала
+        $channelLink = $params->get('channel_link') ?: $category->alias; // ссылка на канал
+        $channelDescription = $params->get('channel_description') ?: strip_tags($category->description); // описание канала
+
         return '
-        <title>' . htmlspecialchars($cat['name'], ENT_COMPAT, 'UTF-8', false) . '</title>
-        <link>' . $sitePath . trim($cat['link'], '/') . '</link>
-        <description>' . htmlspecialchars(str_replace('&nbsp;', ' ', $this->getRevars($cat['description'])), ENT_COMPAT, 'UTF-8', false) . '</description>
+        <title>' . htmlspecialchars($channelName, ENT_COMPAT, 'UTF-8', false) . '</title>
+        <link>' . $sitePath . trim($channelLink, '/') . '</link>
+        <description>' . htmlspecialchars(str_replace('&nbsp;', ' ', $this->getRevars($channelDescription)), ENT_COMPAT, 'UTF-8', false) . '</description>
         <language>ru</language>';
     }
 
@@ -263,9 +280,13 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
     {
         $path = Path::check($this->rootDirectory . 'yandex');
 
+        $app = $this->getApplication();
+        $categoryFactory = $app->bootComponent('com_content')->getCategory();
+        $category = $categoryFactory->get($data['catids'][0]);
+
         if (!is_dir($path)) mkdir($path); // проверяем есть ли папка yandex, если нет, создаем ее
         if (isset($data) && !empty($data)) { // если есть данные
-            file_put_contents($path  . '/' . trim($data['filename'], '/') . '.turbo.xml', $this->channelRender($data)); // то записываем в файл
+            file_put_contents($path  . '/' . trim($category->alias, '/') . '.turbo.xml', $this->channelRender($data)); // то записываем в файл
         }
     }
 
@@ -353,21 +374,10 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
 
         $items = $articles->getItems();
 
-        $categoryFactory = $app->bootComponent('com_content')->getCategory();
-        $cat = $categoryFactory->get($catids[0]);
-
-        $channelName = $params->get('channel_name') ?: $cat->title;
-        $channelLink = $params->get('channel_link') ?: $cat->alias;
-        $channelFileName = $cat->alias;
-        $channelDescription = $params->get('channel_description') ?: strip_tags($cat->description);
-
         $data = [
-            'name' => $channelName,
-            'alias' => $cat->alias,
-            'link' => $channelLink,
-            'description' => $channelDescription,
-            'filename' => $channelFileName,
-            'items' => $items
+            'catids' => $catids,
+            'items' => $items,
+            'params' => $params
         ];
 
         $this->fileSave($data);

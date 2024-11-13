@@ -265,7 +265,7 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
 
         if (!is_dir($path)) mkdir($path); // проверяем есть ли папка yandex, если нет, создаем ее
         if (isset($data) && !empty($data)) { // если есть данные
-            file_put_contents($path  . '/' . trim($data['filename'], '/') . '.turbo.xml', print_r($this->channelRender($data), true)); // то записываем в файл
+            file_put_contents($path  . '/' . trim($data['filename'], '/') . '.turbo.xml', $this->channelRender($data)); // то записываем в файл
         }
     }
 

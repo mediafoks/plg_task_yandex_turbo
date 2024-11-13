@@ -5,9 +5,9 @@
         <element>yandexturbo</element>
         <type>plugin</type>
         <folder>task</folder>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <downloads>
-            <downloadurl type="full" format="zip">https://github.com/mediafoks/plg_task_yandex_turbo/archive/refs/tags/v1.0.1.zip</downloadurl>
+            <downloadurl type="full" format="zip">https://github.com/mediafoks/plg_task_yandex_turbo/archive/refs/tags/v1.0.2.zip</downloadurl>
         </downloads>
         <tags>
             <tag>stable</tag>

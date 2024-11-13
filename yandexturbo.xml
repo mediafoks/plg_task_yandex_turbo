@@ -7,7 +7,7 @@
     <license>GNU General Public License version 2 or later</license>
     <authorEmail>mediafoks@gmail.com</authorEmail>
     <authorUrl></authorUrl>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>PLG_TASK_YANDEX_TURBO_XML_DESCRIPTION</description>
     <namespace path="src">Joomla\Plugin\Task\YandexTurbo</namespace>
     <files>

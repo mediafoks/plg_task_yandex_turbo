@@ -353,15 +353,8 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
 
         $items = $articles->getItems();
 
-        $cat = [];
-        if (
-            empty($params->get('channel_name'))
-            || empty($params->get('channel_link'))
-            || empty($params->get('channel_description'))
-        ) {
-            $categoryFactory = $app->bootComponent('com_content')->getCategory();
-            $cat = $categoryFactory->get($catids[0]);
-        }
+        $categoryFactory = $app->bootComponent('com_content')->getCategory();
+        $cat = $categoryFactory->get($catids[0]);
 
         $channelName = $params->get('channel_name') ?: $cat->title;
         $channelLink = $params->get('channel_link') ?: $cat->alias;
@@ -370,6 +363,7 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
 
         $data = [
             'name' => $channelName,
+            'alias' => $cat->alias,
             'link' => $channelLink,
             'description' => $channelDescription,
             'filename' => $channelFileName,

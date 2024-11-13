@@ -233,7 +233,7 @@ class YandexTurbo extends CMSPlugin implements SubscriberInterface
             <author>' . htmlspecialchars($item->author, ENT_COMPAT, 'UTF-8', false) . '</author>
             <turbo:content>
                 <![CDATA[ <header><h1>' . htmlspecialchars($item->title, ENT_COMPAT, 'UTF-8', false) . '</h1></header>
-                <div>' . $itemImage . '</div>' . htmlspecialchars(str_replace('&nbsp;', ' ', $this->getRevars($item->introtext)), ENT_COMPAT, 'UTF-8', false) . ' ]]>
+                <div>' . $itemImage . '</div>' . str_replace('&nbsp;', ' ', $this->getRevars($item->introtext)) . ' ]]>
             </turbo:content>
         </item>';
     }
